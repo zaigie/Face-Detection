@@ -25,9 +25,9 @@ age = result['result']['face_list'][0]['age']
 beauty = result['result']['face_list'][0]['beauty']
 sex = result['result']['face_list'][0]['gender']
 
-if str(sex) == 'male'
+if str(sex) == 'male':
     fsex == '男'
-if str(sex) == 'female'
+if str(sex) == 'female':
     fsex == '女'
 
 print('估计年龄：' + f'{str(age):.2f}' + '岁' + '  ' + '估计性别：' + fsex + '  ' + '颜值评分：' + '%.2f' %str(beauty) + '分')
