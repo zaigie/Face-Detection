@@ -3,7 +3,12 @@ import os
 from aip import AipFace
 import base64
 import time
+import itchat
+import time
 
+itchat.auto_login(hotReload=True)
+rooms = itchat.get_chatrooms(update=True)
+rooms = itchat.search_chatrooms(name='itchat_test')
 cam = cv2.VideoCapture(0)
 cam.set(3, 640) # set video width
 cam.set(4, 480) # set video height
@@ -48,15 +53,47 @@ imageType = "BASE64"
 groupIdList = 'Dev'
 
 a = client.search(image,imageType,groupIdList)
-name = a['result']['user_list'][0]['user_id']
-score = a['result']['user_list'][0]['score']
 
+if a['error_msg'] == 'SUCCESS':
+    score = a['result']['user_list'][0]['score']
+    name = a['result']['user_list'][0]['user_id']
 
-print('用户：' + str(name) + '  ' + '相似度：' + f'{score:.2f}' + "%")
+    if score > 80:
 
-curren_time = time.asctime(time.localtime(time.time()))
-f = open('DetectionLog.txt','a')
-f.write("用户: " + name + "     " + "相似度：" + f'{score:.2f}' + "%" + "     " + "刷脸时间:" + str(curren_time) +'\n')
-f.close()
+        print('用户：' + str(name) + '  ' + '相似度：' + f'{score:.2f}' + "%")
+
+        curren_time = time.asctime(time.localtime(time.time()))
+        f = open('DetectionLog.txt','a')
+        f.write("用户: " + str(name) + "     " + "相似度：" + f'{score:.2f}' + "%" + "     " + "刷脸时间:" + str(curren_time) +'\n')
+        f.close()
+
+        if rooms is not None:
+            username = rooms[0]['UserName']
+            itchat.send(str(name) + " 刷脸成功！ " + '\n' + "相似度为：" + f'{score:.2f}' + "%" + '\n' + str(curren_time),toUserName=username)
+        else:
+            print('\n [提示]发送的群名有误！')
+    else:
+        print("与" + str(name) + '相似度为：' + f'{score:.2f}' + "%" + "  不予通过！")
+
+        curren_time = time.asctime(time.localtime(time.time()))
+        f = open('DetectionLog.txt','a')
+        f.write("用户: " + str(name) + "     " + "相似度：" + f'{score:.2f}' + "%" + "     " + "刷脸时间:" + str(curren_time) +'\n')
+        f.close()
+        if rooms is not None:
+            username = rooms[0]['UserName']
+            itchat.send(str(name) + "刷脸失败！ " + '\n' + "相似度为：" + f'{score:.2f}' + "%" + '\n' + str(curren_time),toUserName=username)
+        else:
+            print('\n [提示]发送的群名有误！')
+
+if a['error_msg'] == 'pic not has face':
+    print('照片里没人哦！')
+
+    curren_time = time.asctime(time.localtime(time.time()))
+    if rooms is not None:
+        username = rooms[0]['UserName']
+        itchat.send("对比里没看到人！" + '\n' + str(curren_time),toUserName=username)
+    else:
+        print('\n [提示]发送的群名有误！')
+
 os.remove("cache/cache.jpg")
 #print(a)
