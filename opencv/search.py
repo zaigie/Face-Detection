@@ -12,10 +12,10 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 #iniciate id counter
 id = 0
 
-# names related to ids: example ==> Marcelo: id=1,  etc
-names = ['None', '第一张脸', '第二张脸', '第三张脸', '第四张脸', '第五张脸'] 
+f = open("facedata.txt","r")
+names = f.readlines()
+f.close()
 
-# Initialize and start realtime video capture
 cam = cv2.VideoCapture(0)
 cam.set(3, 640) # set video widht
 cam.set(4, 480) # set video height
@@ -27,7 +27,7 @@ minH = 0.1*cam.get(4)
 while True:
 
     ret, img =cam.read()
-    img = cv2.flip(img, -1) # Flip vertically
+    img = cv2.flip(img, -1)
 
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
@@ -57,11 +57,10 @@ while True:
     
     cv2.imshow('camera',img) 
 
-    k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video
+    k = cv2.waitKey(10) & 0xff
     if k == 27:
         break
 
-# Do a bit of cleanup
 print("\n [提示] 正在退出程序...")
 cam.release()
 cv2.destroyAllWindows()
