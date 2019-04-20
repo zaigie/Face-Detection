@@ -1,0 +1,23 @@
+error_code:
+error_msg:
+log_id:
+timestamp:
+cached:
+result:
+    face_num:
+    face_list:
+        face_token:
+        location:
+            left:
+            top:
+            width:
+            height:
+            rotation:
+        face_probability:
+        angle:
+            yaw:
+            pitch:
+            roll:
+        age:
+        beauty:
+        glasses:
